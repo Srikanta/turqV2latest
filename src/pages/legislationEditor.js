@@ -1,18 +1,15 @@
 import React from "react"
 import { connect } from 'react-redux'
 import { Button } from '@material-ui/core'
-import isEmpty from 'underscore/modules/isEmpty'
 import { toast } from 'react-toastify';
 
 import EditorLayout from "../components/editor/layout"
-import LegislationText from "../components/legislation/legislationText"
+
 import Editor, { LeftPanel, RightPanel } from "../components/editor/editor"
-import StringInput from "../components/editor/input/stringInput"
-import TextInput from "../components/editor/input/textInput"
-import InputWrapper from "../components/editor/input/inputWrapper"
+
 import Modal from "../components/modal"
 import { updateLegislation, fetchLegislation } from '../actions/legislationActions'
-import * as constants from '../constants'
+
   
 class LegislationEditor extends React.Component {
 
