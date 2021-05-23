@@ -25,10 +25,49 @@ class LegislationEditor extends React.Component {
   }
   
   componentDidMount() {
+
+
+
+
+
+
+
+    var config = {
+      apiKey: "AIzaSyDBdICGrLQ691Jkn8gZGJbNXvb5OT7Sq9E",
+      databaseURL: "https://posts-9128d-default-rtdb.firebaseio.com/",
+    };
+
+
+    window.firebase.initializeApp(config);
+    var firepadRef = this.getExampleRef();
+    var codeMirror = window.CodeMirror(document.getElementById('firepad-container'), { lineWrapping: true });
+
+
+    var firepad = window.Firepad.fromCodeMirror(firepadRef, codeMirror,
+    { richTextToolbar: true, richTextShortcuts: true });
+    //// Initialize contents.
+    firepad.on('ready', function() {
+      if (firepad.isHistoryEmpty()) {
+        //firepad.setHtml('');
+      }
+      else
+      {
+        var text = firepad.getHtml();
+        document.getElementById('firepad-post').innerHTML = text;
+
+      }
+   
+
+   
+    });
+
+
     const prev_data = localStorage.getItem('unsaved_legislation')
 
     //If we have a parameter we need to get the info for that contest
     var contest = new URLSearchParams(this.props.location.search).get('contest')
+
+    /*
     if (this.props.match.params.id) {
       this.props.dispatch(fetchLegislation(this.props.match.params.id))
     } else if (prev_data !== null) {
@@ -40,8 +79,18 @@ class LegislationEditor extends React.Component {
       // Set to true automatically if we aren't requesting data
       this.setState({...this.state, isLoaded: true, contest: contest})
     }
+    */
   }
 
+  getExampleRef() {
+
+    var user = localStorage.email.substring(0, 4);
+    var ref = window.firebase.database().ref('posts/'+user);
+    
+   
+    return ref;
+
+  }
   componentWillReceiveProps(nextProps) {
     this.setState({...this.state, legislation: {...nextProps.legislation}})
   }
@@ -134,103 +183,12 @@ class LegislationEditor extends React.Component {
             <Editor>
               <LeftPanel>
                 <div className="my-3 mx-5">
-                  <InputWrapper title="Title" hint={constants.LEGISLATION_TITLE_HINT} >
-                    <StringInput
-                      placeholder="Title"
-                      className="editor-input col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.title}
-                      name="title"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Chapter" hint={constants.LEGISLATION_CHAPTER_HINT} >
-                    <StringInput
-                      placeholder="Chapter"
-                      className="editor-input col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.chapter}
-                      name="chapter"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="General Laws Section" hint={constants.LEGISLATION_ACCOMPLISHES_HINT} >
-                    <StringInput
-                      placeholder="General Laws Section"
-                      className="editor-input col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.section}
-                      name="section"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Describe what this bill accomplishes in 1-2 sentences" hint={constants.LEGISLATION_ACCOMPLISHES_HINT} >
-                    <StringInput
-                      placeholder="General Laws Section"
-                      className="editor-input col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.accomplishes}
-                      name="accomplishes"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Define the terms you will be using in this legislation" hint={constants.LEGISLATION_TERMS_HINT} >
-                    <TextInput
-                      placeholder="Terms"
-                      className="editor-textarea col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.terms}
-                      name="terms"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Statement of Purpose (expand and go deeper on Bill description)" hint={constants.LEGISLATION_PURPOSE_HINT} >
-                    <TextInput
-                      placeholder="Purpose"
-                      className="editor-textarea col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.purpose}
-                      name="purpose"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Provisions" hint={constants.LEGISLATION_PROVISIONS_HINT} >
-                    <TextInput
-                      placeholder="Provisions"
-                      className="editor-textarea col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.provisions}
-                      name="provisions"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Special Exceptions (optional)" hint={constants.LEGISLATION_EXCEPTIONS_HINT} >
-                    <TextInput
-                      placeholder="Exceptions"
-                      className="editor-textarea col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.exceptions}
-                      name="exceptions"
-                    />
-                  </InputWrapper>
-                  <InputWrapper title="Other Provisions (optional)" hint={constants.LEGISLATION_OTHER_HINT} >
-                    <TextInput
-                      placeholder="Other Provisions"
-                      className="editor-textarea col-12 form-control"
-                      onChange={event => this.handleChange(event)}
-                      value={legislation.other}
-                      name="other"
-                    />
-                  </InputWrapper>
+                <div id="firepad-container"></div>
                 </div>
               </LeftPanel>
               <RightPanel>
                 <div className="mx-5 my-5">
-              <LegislationText
-                title={legislation.title}
-                chapter={legislation.chapter}
-                section={legislation.section}
-                accomplishes={legislation.accomplishes}
-                terms={legislation.terms}
-                purpose={legislation.purpose}
-                provisions={legislation.provisions}
-                competition={legislation.competition}
-                other={legislation.other}
-                exceptions={legislation.exceptions}
-              />
+                <div id="firepad-post"></div>
                 </div>
               </RightPanel>
             </Editor>
