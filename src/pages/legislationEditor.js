@@ -8,7 +8,7 @@ import EditorLayout from "../components/editor/layout"
 import Editor, { LeftPanel, RightPanel } from "../components/editor/editor"
 
 import Modal from "../components/modal"
-import { updateLegislation, fetchLegislation } from '../actions/legislationActions'
+import { updateLegislation } from '../actions/legislationActions'
 
   
 class LegislationEditor extends React.Component {
@@ -59,10 +59,10 @@ class LegislationEditor extends React.Component {
     });
 
 
-    const prev_data = localStorage.getItem('unsaved_legislation')
+    //const prev_data = localStorage.getItem('unsaved_legislation')
 
     //If we have a parameter we need to get the info for that contest
-    var contest = new URLSearchParams(this.props.location.search).get('contest')
+    //var contest = new URLSearchParams(this.props.location.search).get('contest')
 
     /*
     if (this.props.match.params.id) {
@@ -157,7 +157,7 @@ class LegislationEditor extends React.Component {
   }
 
   render () {
-    const legislation = this.state.legislation
+    //const legislation = this.state.legislation
 
     var modal = null
     if (this.state.savedData && this.state.showModal) {
