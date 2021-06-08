@@ -1,15 +1,18 @@
 import React from "react"
 import { connect } from 'react-redux'
 import { Button } from '@material-ui/core'
+import isEmpty from 'underscore/modules/isEmpty'
 import { toast } from 'react-toastify';
 
 import EditorLayout from "../components/editor/layout"
-
+//import LegislationText from "../components/legislation/legislationText"
 import Editor, { LeftPanel, RightPanel } from "../components/editor/editor"
-
+//import StringInput from "../components/editor/input/stringInput"
+//import TextInput from "../components/editor/input/textInput"
+//import InputWrapper from "../components/editor/input/inputWrapper"
 import Modal from "../components/modal"
-import { updateLegislation } from '../actions/legislationActions'
-
+import { updateLegislation , fetchLegislation} from '../actions/legislationActions'
+//import * as constants from '../constants'
   
 class LegislationEditor extends React.Component {
 
@@ -19,14 +22,10 @@ class LegislationEditor extends React.Component {
     this.handleChange = this._handleChange.bind(this);
     this.handleSubmit = this._handleSubmit.bind(this);
     this.populateSavedData = this._populateSavedData.bind(this);
+    this.ref = '';
   }
   
   componentDidMount() {
-
-
-
-
-
 
 
     var config = {
@@ -51,6 +50,9 @@ class LegislationEditor extends React.Component {
       {
         var text = firepad.getHtml();
         document.getElementById('firepad-post').innerHTML = text;
+        
+        //alert(text);
+
 
       }
    
@@ -58,13 +60,33 @@ class LegislationEditor extends React.Component {
    
     });
 
+    firepad.on('synced', function(isSynced) {
+      // isSynced will be false immediately after the user edits the pad,
+      // and true when their edit has been saved to Firebase.
+      //document.getElementById('firepad-post').insertAdjacentHTML("afterend",'');
+      console.log(isSynced);
+      //clearBox('firepad-post');
+      document.getElementById('firepad-post').innerHTML = "";
+      if(isSynced)
+      {
+        
+        var text = firepad.getHtml();
+        //this.ref = text;
+        localStorage.setItem('ref', text)
+        document.getElementById('firepad-post').innerHTML = localStorage.getItem('ref');
 
-    //const prev_data = localStorage.getItem('unsaved_legislation')
+      }
+      
+      
+    });
+
+    
+    const prev_data = localStorage.getItem('unsaved_legislation')
 
     //If we have a parameter we need to get the info for that contest
-    //var contest = new URLSearchParams(this.props.location.search).get('contest')
+    var contest = new URLSearchParams(this.props.location.search).get('contest')
 
-    /*
+   
     if (this.props.match.params.id) {
       this.props.dispatch(fetchLegislation(this.props.match.params.id))
     } else if (prev_data !== null) {
@@ -76,18 +98,34 @@ class LegislationEditor extends React.Component {
       // Set to true automatically if we aren't requesting data
       this.setState({...this.state, isLoaded: true, contest: contest})
     }
-    */
+   
   }
 
   getExampleRef() {
 
-    var user = localStorage.email.substring(0, 4);
-    var ref = window.firebase.database().ref('posts/'+user);
+    
+    var user = localStorage.email.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+    user = user.substring(0, 6);
+    //console.log(user);
+    
+    //console.log(localStorage.email);
+    //console.log(localStorage.email.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-'));
+    //console.log(window.location.search.split('='));
+
+    var contest = new URLSearchParams(this.props.location.search).get('contest')
+    console.log(contest);
+   
+    //console.log(param);
+    var ref = window.firebase.database().ref('posts/'+user+'/'+contest);
+    //var ref = window.firebase.database().ref('posts/'+user);
+    //var tech = getUrlParameter('contest');
+    //console.log(tech);
     
    
     return ref;
 
   }
+  
   componentWillReceiveProps(nextProps) {
     this.setState({...this.state, legislation: {...nextProps.legislation}})
   }
@@ -99,6 +137,7 @@ class LegislationEditor extends React.Component {
   _checkMandatoryFields() {
     var isValid = true
     const legislation = this.state.legislation
+    /*
     if (legislation === undefined) {
       toast.error('Document Empty: Please fill in required Fields');
       isValid = false
@@ -123,7 +162,7 @@ class LegislationEditor extends React.Component {
     } else if (legislation.provisions === undefined || legislation.provisions === "") {
       toast.error('Missing Required Fields: Please include "Provisions"');
       isValid = false
-    }
+    }*/
     return isValid
   }
 
@@ -134,7 +173,8 @@ class LegislationEditor extends React.Component {
       }
       const legislationId = this.props.match.params.id
       const token = this.props.token
-      const data = {...this.state.legislation, contestId: this.state.contest}
+      const data = {...this.state.legislation, contestId: this.state.contest, ref: localStorage.getItem('ref')}
+      console.log(data)
       this.props.dispatch(updateLegislation(legislationId, data, token))
   }
 
