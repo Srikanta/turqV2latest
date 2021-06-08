@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from 'react-redux'
 import { Button } from '@material-ui/core'
 import isEmpty from 'underscore/modules/isEmpty'
-import { toast } from 'react-toastify';
+//import { toast } from 'react-toastify';
 
 import EditorLayout from "../components/editor/layout"
 //import LegislationText from "../components/legislation/legislationText"
@@ -136,7 +136,7 @@ class LegislationEditor extends React.Component {
 
   _checkMandatoryFields() {
     var isValid = true
-    const legislation = this.state.legislation
+    //const legislation = this.state.legislation
     /*
     if (legislation === undefined) {
       toast.error('Document Empty: Please fill in required Fields');
