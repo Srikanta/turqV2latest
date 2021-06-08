@@ -11,12 +11,12 @@ const Footer = () => (
     <Grid container item xs={12} md={4} justify="center">
       <Grid item xs={12} md={6}>
         <Typography variant="body1" color="textSecondary" component="h4" align="center">
-          <div className="footer-text">© copyright 2020 turq, pbc</div>
+          <div className="footer-text">© copyright 2021 turq, pbc</div>
         </Typography>
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant="body1" color="textSecondary" component="h4" align="center">
-          <div className="footer-text">Want an Issue Posted? Email: tim@turq.io</div>
+          <div className="footer-text">Contact Email: tim@turq.io Phone: (617) 383-4266</div>
         </Typography>
       </Grid>
     </Grid>
