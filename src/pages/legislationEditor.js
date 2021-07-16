@@ -54,6 +54,8 @@ class LegislationEditor extends React.Component {
         //alert(text);
 
 
+
+
       }
    
 
@@ -71,8 +73,14 @@ class LegislationEditor extends React.Component {
       {
         
         var text = firepad.getHtml();
+        console.log(text);
         //this.ref = text;
-        localStorage.setItem('ref', text)
+        var matches = text.match( /<span[^>]*>([^<]+)<\/span>/ig);
+        console.log(matches[0]);
+        localStorage.setItem('ref', text);
+        localStorage.setItem('title', matches[0]);
+
+        
         document.getElementById('firepad-post').innerHTML = localStorage.getItem('ref');
 
       }
@@ -99,6 +107,15 @@ class LegislationEditor extends React.Component {
       this.setState({...this.state, isLoaded: true, contest: contest})
     }
    
+  }
+
+  lineBreakCount(str){
+    /* counts \n */
+    try {
+        return((str.match(/[^\n]*\n[^\n]*/gi).length));
+    } catch(e) {
+        return 0;
+    }
   }
 
   getExampleRef() {
@@ -173,9 +190,11 @@ class LegislationEditor extends React.Component {
       }
       const legislationId = this.props.match.params.id
       const token = this.props.token
-      const data = {...this.state.legislation, contestId: this.state.contest, ref: localStorage.getItem('ref')}
+      const data = {...this.state.legislation, contestId: this.state.contest, title: localStorage.getItem('title'),ref: localStorage.getItem('ref')}
       console.log(data)
       this.props.dispatch(updateLegislation(legislationId, data, token))
+
+    
   }
 
   _populateSavedData(populateData) {
